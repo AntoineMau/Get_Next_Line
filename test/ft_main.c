@@ -21,8 +21,8 @@ int		main(int ac, char **av)
 
 	(void)line;
 	if ((fd = open(av[1], O_RDONLY)) == -1)
-		return (-1);
-	printf("\nreturn: %d\n", get_next_line(fd, line));
+		return	(-1);
+	printf("return: %d", get_next_line(fd, line));
 	if (close(fd) == -1)
 		return (-1);
 	return (0);

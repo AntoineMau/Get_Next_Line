@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: anmauffr <anmauffr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/15 14:38:10 by anmauffr          #+#    #+#             */
-/*   Updated: 2018/11/15 15:34:19 by anmauffr         ###   ########.fr       */
+/*   Created: 2018/11/16 16:24:59 by anmauffr          #+#    #+#             */
+/*   Updated: 2018/11/16 16:24:59 by anmauffr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,10 @@ int		get_next_line(const int fd, char **line)
 	{
 		if ((ret = read(fd, buf, BUFF_SIZE)) == -1)
 			return (-1);
-		else
-			buf[ret] = '\0';
 		i = -1;
-		while (buf[++i])
-			if (buf[i] == '\n' && find_n != 1)
-				find_n = 1;
+		if (buf[++i] == '\n' && find_n != 1)
+			find_n = 1;
+		ft_putstr_fd(buf, STDOUT);
 	}
-	while (buf[i])
-		buf[i++] = '\0';
-	ft_putstr_fd(buf, STDOUT);
 	return (1);
 }

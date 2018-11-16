@@ -19,7 +19,7 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 
-# define BUFF_SIZE 1000
+# define BUFF_SIZE 1
 # define STDOUT 1
 # define STDERR 2
 
