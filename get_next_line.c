@@ -6,52 +6,56 @@
 /*   By: anmauffr <anmauffr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/16 16:24:59 by anmauffr          #+#    #+#             */
-/*   Updated: 2018/11/19 08:40:16 by anmauffr         ###   ########.fr       */
+/*   Updated: 2018/11/19 10:43:45 by anmauffr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_suite(int fd, char *str, char **line)
+static int	ft_new_line(char **s, char **line, int fd, int ret)
 {
-	int			ret;
-	char		buff[BUFF_SIZE + 1];
+	int		len;
 
-	if (*str)
-		ft_strcpy(*line, str);
-	while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
+	len = 0;
+	while (s[fd][len] && s[fd][len] != '\n')
+		len++;
+	if (s[fd][len] == '\n')
 	{
-		buff[ret] = '\0';
-		str = ft_strjoin(str, buff);
+		line = ft_strsub(s[fd], 0, len);
+		s[fd] = ft_strdup(s[fd] + len + 1);
+		if (s[fd][0] == '\0')
+			ft_strdel(&s[fd]);
 	}
-	return (str);
+	else if (!s[fd][len])
+	{
+		if (ret == BUFF_SIZE)
+			return (get_next_line(fd, line));
+		*line = ft_strdup(s[fd]);
+		ft_strdel(&s[fd]);
+	}
+	return (1);
 }
 
-int		get_next_line(int const fd, char **line)
+int			get_next_line(const int fd, char **line)
 {
-	int			i;
-	static char	*str;
+	static char	*s[255];
+	char		buf[BUFF_SIZE + 1];
+	int			ret;
 
-	if ((i = 0) || fd == -1 || line == 0)
+	if (fd < 0 || !line)
 		return (-1);
-	if (!str)
-		if (!(str = (char*)malloc(sizeof(char) * (BUFF_SIZE + 1))))
-			return (-1);
-	str = ft_suite(fd, str, line);
-	if (str[i])
+	if (!s[fd])
+		s[fd] = ft_strnew(1);
+	while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
-		while (str[i] != '\n' && str[i])
-			i++;
-		if (i == 0)
-			*line = ft_strdup("");
-		else
-		{
-			*line = ft_strsub(str, 0, i);
-			str = &str[i + 1];
-		}
-		return (1);
+		buf[ret] = '\0';
+		s[fd] = ft_strjoin(s[fd], buf);
+		if (ft_strchr(buf, '\n'))
+			break ;
 	}
-	else
-		*line = ft_strdup("");
-	return (0);
+	if (ret < 0)
+		return (-1);
+	else if (ret == 0 && (!s[fd] || !s[fd][0]))
+		return (0);
+	return (ft_new_line(s, line, fd, ret));
 }

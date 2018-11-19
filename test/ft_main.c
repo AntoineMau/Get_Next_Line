@@ -6,7 +6,7 @@
 /*   By: anmauffr <anmauffr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/15 14:57:18 by anmauffr          #+#    #+#             */
-/*   Updated: 2018/11/19 08:50:38 by anmauffr         ###   ########.fr       */
+/*   Updated: 2018/11/19 08:57:07 by anmauffr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ int		main(int ac, char **av)
 		printf("%s\n", line);
 		i++;
 	}
-	free(line);
 	if (close(fd) == -1)
 		return (-1);
 	return (0);
