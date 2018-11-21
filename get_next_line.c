@@ -6,7 +6,7 @@
 /*   By: anmauffr <anmauffr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 10:46:25 by anmauffr          #+#    #+#             */
-/*   Updated: 2018/11/20 19:09:20 by anmauffr         ###   ########.fr       */
+/*   Updated: 2018/11/20 19:36:16 by anmauffr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,11 @@ int			get_next_line(const int fd, char **line)
 {
 	int			ret;
 	char		buf[BUFF_SIZE + 1];
-	static char	*save[4096];
 	char		*t;
+	static char	*save[4096];
 
-	if (fd < 0 || !line)
+	if (fd < 0 || !line || (!save[fd] && !(save[fd] = ft_strnew(1))))
 		return (-1);
-	if (!save[fd] && (save[fd] = ft_strnew(1)))
-		if (!save[fd])
-			return (-1);
 	while (!ft_strchr(save[fd], '\n') && (ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
 		buf[ret] = '\0';
@@ -51,7 +48,5 @@ int			get_next_line(const int fd, char **line)
 	if (ret == -1)
 		return (-1);
 	*line = ft_give(fd, save, *line, t);
-	if (!save[fd] && ft_strlen(*line) == 0)
-		return (0);
-	return (1);
+	return ((!save[fd] && ft_strlen(*line) == 0) ? 0 : 1);
 }
