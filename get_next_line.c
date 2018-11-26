@@ -15,13 +15,16 @@
 static char	*ft_give(int fd, char **save, char *line, char *t)
 {
 	if (ft_strchr(save[fd], '\n'))
-		line = ft_strsub(save[fd], 0, ft_strchr(save[fd], '\n') - save[fd]);
+		if (!(line = ft_strsub(save[fd], 0, ft_strchr(save[fd], '\n') - save[fd])))
+			return (-1);
 	else
-		line = ft_strdup(save[fd]);
+		if (!(line = ft_strdup(save[fd])))
+			return (-1);
 	if (ft_strchr(save[fd], '\n'))
 	{
 		t = save[fd];
-		save[fd] = ft_strsub(t, ft_strchr(t, '\n') - t + 1, ft_strlen(t));
+		if (!(save[fd] = ft_strsub(t, ft_strchr(t, '\n') - t + 1, ft_strlen(t))))
+			return (-1);
 		free(t);
 	}
 	else
@@ -36,13 +39,14 @@ int			get_next_line(const int fd, char **line)
 	char		*t;
 	static char	*save[4096];
 
-	if (fd < 0 || !line || (!save[fd] && !(save[fd] = ft_strnew(1))))
+	if (fd < 0 || !line || BUFF_SIZE <= 0 || (!save[fd] && !(save[fd] = ft_strnew(1))))
 		return (-1);
 	while (!ft_strchr(save[fd], '\n') && (ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
 		buf[ret] = '\0';
 		t = save[fd];
-		save[fd] = ft_strjoin(t, buf);
+		if (!(save[fd] = ft_strjoin(t, buf)))
+			return (-1);
 		free(t);
 	}
 	if (ret == -1)
